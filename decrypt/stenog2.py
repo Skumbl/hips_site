@@ -18,6 +18,8 @@ def encoding(imagePath, dataToEncrypt):
     splitData = list(split(binaryData, numLocations))   # split data into 10 parts
     for i,d in enumerate(splitData):
         splitData[i] = d + '00000000'
+    splitMergedData = ''.join(splitData)
+    print('splitMergedData: ', splitMergedData)
     maxDataLen = max([len(d) for d in splitData])
 
     maxNumBits       = int(np.ceil(np.log2(numBytesPic)))
@@ -34,76 +36,67 @@ def encoding(imagePath, dataToEncrypt):
                 if indices[i] < 0:
                     indices[i] = 0
                     indices[i+1] = maxDataLen
+    
+    indicesEnds = indices.copy()
+    idxs2 = np.array([], dtype=int)
+    for i,idx in enumerate(indices):
+        idxs2 = np.append(idxs2, np.arange(idx, idx+len(splitData[i])))
+    idxs2 = np.array(idxs2, dtype=int)
+    indices = idxs2
     print('indices: ', indices)
 
 
 
 
     maxNum  = len(format(numBytesPic, 'b'))
-    for i,num in enumerate(indices):
+    allIndicesEnds = ''
+    for i,num in enumerate(indicesEnds):
         num = format(num, 'b')
-        num = num.zfill(maxNum)#[1, 5]
-
+        num = num.zfill(maxNum)
+        allIndicesEnds += num
 
     #[location (as an rgb index), how many bits to write in that location]
 
-    curDataIdx = 0 #the current index to pull data from on the splitData
-    currRunIdx = 0 #As if it were a flattened array, the index of the rgb value
-    currLocationIdx = 0 #which location are we currently using?
-    #write = False;
-    for i,row in enumerate(imageData):
-        for j,pixel in enumerate(row):
-            # convert RGB values to binary format
-            for k,rgb in enumerate(pixel):
-                if currRunIdx == indices[currLocationIdx] + curDataIdx:
-                    rgb         = format(rgb, '08b')
-                    rgb         = rgb[:-1] + str(splitData[currLocationIdx][curDataIdx])
-                    curDataIdx += 1
-                    imageData[i][j][k] = int(rgb, 2)
-                    if curDataIdx == len(splitData[currLocationIdx]):
-                        curDataIdx = 0
-                        currLocationIdx += 1
-                # if curDataIdx < len(binaryData):
-                #     rgb         = format(rgb, '08b')
-                #     rgb         = rgb[:-1] + str(binaryData[curDataIdx])
-                #     curDataIdx += 1
-                #     # convert rgb back to int
-                #     imageData[i][j][k] = int(rgb, 2)
-                currRunIdx += 1
-    
-    # curRGBIdx  = 0
-    # imageData = imageData[::-1, ::-1, ::-1]
-    # print('imageData: ', imageData)
-    # for i,row in enumerate(imageData):
-    #     for j,pixel in enumerate(row):
-    #         # convert RGB values to binary format
-    #         for k,rgb in enumerate(pixel):
+    dataIdx = 0
+    imgDatFlat = imageData.flatten()
+    for i,rgb in enumerate(imgDatFlat):
+        if i in indices:
+            rgb = format(rgb, '08b')
+            rgb = rgb[:-1] + str(splitMergedData[dataIdx])
+            dataIdx += 1
+            imgDatFlat[i] = int(rgb, 2)
+            if dataIdx == len(splitData):
+                break
 
-    #             curRGBIdx += 1
+    
+    curRGBIdx = 0
+    imageData = imageData[::-1]
+    for i,rgb in enumerate(imgDatFlat):
+        if i in indicesEnds:
+            rgb = format(rgb, '08b')
+            rgb = rgb[:-1] + str(splitData[curRGBIdx][-1])
+            curRGBIdx += 1
+            imgDatFlat[i] = int(rgb, 2)
+            if curRGBIdx == len(splitData):
+                break
+    imageData = imageData[::-1]
+    imageData = imgDatFlat.reshape(imageData.shape)
                 
-    # cv2.imwrite('decrypt/stockimageEncrypted.png', imageData)
+    cv2.imwrite('decrypt/stockimageEncrypted.png', imageData)
     return
 
 
 def decode(imagePath):
     imageData   = cv2.imread(imagePath)
-    numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3 * 8))
-    numBytesPic = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3))
-    numLocations = 10
-    maxNum = len(format(numBytesPic, 'b'))
+
     curDataIdx  = 0
     binaryData  = ''
     unencrypted = ''
-    reverseData = imageData[::-1, ::-1, ::-1]
-    locations = getLocations(reverseData, numLocations, maxNum)
-    
-
     for i,row in enumerate(imageData):
         # print('Encoding row: ', i, ' of ', imageData.shape[0])
         for j,pixel in enumerate(row):
             # convert RGB values to binary format
             for k,rgb in enumerate(pixel):
-                
                 # if curDataIdx < len(binaryData):
                 rgb         = format(rgb, '08b')
                 rgb         = rgb[-1]
@@ -119,21 +112,6 @@ def decode(imagePath):
     # print('unencrypted: ', unencrypted)
     # return unencrypted
 
-def getLocations(reverseData, numLocations, maxNum):
-    locations = []
-    locationCount = 0
-    temp = ''
-    for i,row in enumerate(reverseData):
-        for j, pixel in enumerate(row):
-            for k, rgb in enumerate(imageData):
-                rgb         = format(rgb, '08b')
-                rgb         = rgb[-1]
-                temp += rgb
-                if len(temp) == maxNum:
-                    locations.append(int(temp, 2))
-                    locationCount += 1
-                    if locationCount == numLocations:
-                        return locations
 
 def split(a, n):
     k, m = divmod(len(a), n)
