@@ -2,7 +2,13 @@
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+        fontFamily: {
+            LibreBask: "LibreBaskerville",
+            LibreBaskBold: "LibreBaskerville-Bold",
+            LibreBaskItalic: "LibreBaskerville-Italic"
+        }
+    },
   },
   plugins: [],
 };
