@@ -5,6 +5,10 @@ const Home: NextPage = () => {
     console.log("Clicked");
   };
 
+  const decryptFiles = () => {
+    console.log("Decrypt");
+  };
+
   return (
     <div className="grid grid-cols-4 p-16">
       <div className="flex flex-col items-center">
@@ -36,7 +40,7 @@ const Home: NextPage = () => {
           </li>
         </ul>
       </div>
-      <div className="col-span-2 flex flex-col items-center">
+      <div className="col-span-2 flex h-screen flex-col items-center">
         <label htmlFor="text-input">Type to encrypt:</label>
         <textarea
           id="text-input"
@@ -53,7 +57,16 @@ const Home: NextPage = () => {
           onClick={uploadFiles}
           className="rounded-full border border-black bg-white px-4 text-black hover:bg-black hover:text-white"
         >
-          Upload
+          Encrypt
+        </button>
+        <div className="h-1/5" />
+        <label htmlFor="decrypt-input">Upload a file to decrypt</label>
+        <input type="file" id="decrypt-input" />
+        <button
+          onClick={decryptFiles}
+          className="rounded-full border border-black bg-white px-4 text-black hover:bg-black hover:text-white"
+        >
+          Decrypt
         </button>
       </div>
       <div className="flex flex-col items-center">
