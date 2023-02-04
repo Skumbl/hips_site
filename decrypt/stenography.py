@@ -104,5 +104,5 @@ def invert(h):
 
 
 if __name__ == '__main__':
-    # encoding('decrypt/stockimage.png', 'hello world')
+    encoding('decrypt/stockimage.png', 'hello world')
     print(decode('decrypt/stockimageEncrypted.png'))
