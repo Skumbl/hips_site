@@ -4,6 +4,7 @@ import os
 import binascii
 import sys
 from itertools import combinations 
+from time import sleep
 
 
 def encoding(imagePath, dataToEncrypt):
@@ -52,8 +53,9 @@ def encoding(imagePath, dataToEncrypt):
     allIndicesEnds = ''
     for i,num in enumerate(indicesEnds):
         num = format(num, 'b')
-        num = num.zfill(maxNum)
+        num = num.zfill(maxNum) + '00000000'
         allIndicesEnds += num
+    print(allIndicesEnds)
 
     #[location (as an rgb index), how many bits to write in that location]
 
@@ -72,45 +74,30 @@ def encoding(imagePath, dataToEncrypt):
     curRGBIdx = 0
     imageData = imageData[::-1]
     for i,rgb in enumerate(imgDatFlat):
-        if i in indicesEnds:
-            rgb = format(rgb, '08b')
-            rgb = rgb[:-1] + str(splitData[curRGBIdx][-1])
-            curRGBIdx += 1
-            imgDatFlat[i] = int(rgb, 2)
-            if curRGBIdx == len(splitData):
-                break
+        rgb = format(rgb, '08b')
+        rgb = rgb[:-1] + str(allIndicesEnds[curRGBIdx])
+        curRGBIdx += 1
+        imgDatFlat[i] = int(rgb, 2)
+        if curRGBIdx == len(allIndicesEnds):
+            break
     imageData = imageData[::-1]
     imageData = imgDatFlat.reshape(imageData.shape)
-                
+          
     cv2.imwrite('decrypt/stockimageEncrypted.png', imageData)
     return
 
 
 def decode(imagePath):
-    imageData   = cv2.imread(imagePath)
+    imageData = cv2.imread(imagePath)
+    imageData = imageData.flatten()
+    imageData = imageData[::-1]
 
-    curDataIdx  = 0
-    binaryData  = ''
-    unencrypted = ''
-    for i,row in enumerate(imageData):
-        # print('Encoding row: ', i, ' of ', imageData.shape[0])
-        for j,pixel in enumerate(row):
-            # convert RGB values to binary format
-            for k,rgb in enumerate(pixel):
-                # if curDataIdx < len(binaryData):
-                rgb         = format(rgb, '08b')
-                rgb         = rgb[-1]
-                binaryData += rgb
-                if len(binaryData) == 8:
-                    newchar = chr(int(binaryData, 2))
-                    unencrypted += newchar
-                    binaryData   = ''
-                    if newchar == '\0':
-                        return unencrypted
-                curDataIdx += 1
-
-    # print('unencrypted: ', unencrypted)
-    # return unencrypted
+    loc = ''
+    for i,rgb in enumerate(imageData):
+        sleep(0.1)
+        rgb = format(rgb, '08b')
+        loc += rgb[-1]
+        
 
 
 def split(a, n):
@@ -164,4 +151,4 @@ def invert(h):
 
 if __name__ == '__main__':
     encoding('decrypt/stockimage.png', 'hello world')
-    # print(decode('decrypt/stockimageEncrypted.png'))
+    print(decode('decrypt/stockimageEncrypted.png'))
