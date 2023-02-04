@@ -11,27 +11,6 @@ def encoding(imagePath, dataToEncrypt):
     numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3/8))
     binaryData  = ''.join(format(ord(i), '08b') for i in dataToEncrypt)
     numBitsData = len(binaryData)
-    places      = np.random.randint(0, numBitsPic, numBitsData)
-    places      = np.sort(places)
-    placesHash  = hash(np.sum(places))
-
-    num=0
-    for n in invert(placesHash):
-        num += 1
-        if num > 25: break
-    reverseHash = hash(n)
-    print(reverseHash)
-    print(placesHash)
-
-
-    # def findPairs(lst, K, N): 
-    #     return [pair for pair in combinations(lst, N) if sum(pair) == K] 
-    
-    print(np.arange(0,numBitsPic))
-    # import sys
-    # print(sys.getrecursionlimit())
-    sys.setrecursionlimit(10000)
-    findPairs(np.arange(0,numBitsPic), reverseHash, numBitsData)
 
     curDataIdx  = 0
     convertedLSBs = []
@@ -47,7 +26,7 @@ def encoding(imagePath, dataToEncrypt):
                     curDataIdx += 1
                     pixel[k] = int(rgb, 2)
     print('Converted LSBs: ', convertedLSBs)
-    cv2.imwrite('encrypt/stockimage.png', imageData)
+    # cv2.imwrite('encrypt/stockimage.png', imageData)
     return
 
 
