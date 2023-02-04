@@ -9,23 +9,23 @@ from itertools import combinations
 def encoding(imagePath, dataToEncrypt):
     imageData   = cv2.imread(imagePath)
     numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3/8))
-    binaryData  = ''.join(format(ord(i), '08b') for i in dataToEncrypt)
+    binaryData  = ''.join(format(ord(i), '08b') for i in dataToEncrypt) + '00000000'
     numBitsData = len(binaryData)
 
     curDataIdx  = 0
-    convertedLSBs = []
     for i,row in enumerate(imageData):
-        print('Encoding row: ', i, ' of ', imageData.shape[0])
+        # print('Encoding row: ', i, ' of ', imageData.shape[0])
         for j,pixel in enumerate(row):
             # convert RGB values to binary format
             for k,rgb in enumerate(pixel):
                 if curDataIdx < len(binaryData):
-                    rgb = format(rgb, '08b')
-                    convertedLSBs.append(rgb[-1])
-                    rgb = rgb[:-1] + str(binaryData[curDataIdx])
+                    rgb         = format(rgb, '08b')
+                    rgb         = rgb[:-1] + str(binaryData[curDataIdx])
                     curDataIdx += 1
-                    pixel[k] = int(rgb, 2)
-    print('Converted LSBs: ', convertedLSBs)
+                    # convert rgb back to int
+                    imageData[i][j][k] = int(rgb, 2)
+
+    # print('Converted LSBs: ', convertedLSBs)
     # cv2.imwrite('encrypt/stockimage.png', imageData)
     return
 
