@@ -25,9 +25,35 @@ def encoding(imagePath, dataToEncrypt):
                     # convert rgb back to int
                     imageData[i][j][k] = int(rgb, 2)
 
-    # print('Converted LSBs: ', convertedLSBs)
-    # cv2.imwrite('encrypt/stockimage.png', imageData)
+    cv2.imwrite('decrypt/stockimageEncrypted.png', imageData)
     return
+
+
+def decode(imagePath):
+    imageData   = cv2.imread(imagePath)
+    numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3/8))
+
+    curDataIdx  = 0
+    binaryData  = ''
+    unencrypted = ''
+    for i,row in enumerate(imageData):
+        # print('Encoding row: ', i, ' of ', imageData.shape[0])
+        for j,pixel in enumerate(row):
+            # convert RGB values to binary format
+            for k,rgb in enumerate(pixel):
+                # if curDataIdx < len(binaryData):
+                rgb         = format(rgb, '08b')
+                rgb         = rgb[-1]
+                binaryData += rgb
+                if len(binaryData) == 8:
+                    unencrypted += chr(int(binaryData, 2))
+                    print(unencrypted)
+                    binaryData   = ''
+                curDataIdx += 1
+
+    print('unencrypted: ', unencrypted)
+    return unencrypted
+
 
 
 # Python3 program to find all pairs in
@@ -75,5 +101,5 @@ def invert(h):
 
 
 if __name__ == '__main__':
-    encoding('decrypt/stockimage.png', 'hello world')
-    # print(decode('decrypt/stockimage.png'))
+    # encoding('decrypt/stockimage.png', 'hello world')
+    print(decode('decrypt/stockimageEncrypted.png'))
