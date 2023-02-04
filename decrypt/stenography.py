@@ -46,13 +46,16 @@ def decode(imagePath):
                 rgb         = rgb[-1]
                 binaryData += rgb
                 if len(binaryData) == 8:
-                    unencrypted += chr(int(binaryData, 2))
+                    newchar = chr(int(binaryData, 2))
+                    unencrypted += newchar
                     print(unencrypted)
                     binaryData   = ''
+                    if newchar == '\0':
+                        return unencrypted
                 curDataIdx += 1
 
-    print('unencrypted: ', unencrypted)
-    return unencrypted
+    # print('unencrypted: ', unencrypted)
+    # return unencrypted
 
 
 
