@@ -31,7 +31,6 @@ def encoding(imagePath, dataToEncrypt):
 
 def decode(imagePath):
     imageData   = cv2.imread(imagePath)
-    numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3/8))
 
     curDataIdx  = 0
     binaryData  = ''
@@ -48,7 +47,6 @@ def decode(imagePath):
                 if len(binaryData) == 8:
                     newchar = chr(int(binaryData, 2))
                     unencrypted += newchar
-                    print(unencrypted)
                     binaryData   = ''
                     if newchar == '\0':
                         return unencrypted
