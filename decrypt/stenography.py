@@ -17,7 +17,10 @@ def encoding(imagePath, dataToEncrypt):
     maxNumBits       = int(np.ceil(np.log2(numBytesPic)))
     numBytesReserved = numLocations * (8 + maxNumBits)
     numBytesUsable   = numBytesPic-numBytesReserved
-    indices = np.random.randint(0, numBytesUsable, numLocations)
+    indices = np.random.randint(0, numBytesUsable, numLocations) #[location1, location2];
+    #[num of bits to write for location1, num of bits to write for location2]
+    #[actual bits(text) for location1, actual bits(text) for location2]
+
     indices = np.sort(indices)
 
     maxNum  = len(format(numBytesPic, 'b'))
@@ -25,17 +28,31 @@ def encoding(imagePath, dataToEncrypt):
         num = format(num, 'b')
         num = num.zfill(maxNum)
 
-    # curDataIdx = 0
-    # for i,row in enumerate(imageData):
-    #     for j,pixel in enumerate(row):
-    #         # convert RGB values to binary format
-    #         for k,rgb in enumerate(pixel):
-    #             if curDataIdx < len(binaryData):
-    #                 rgb         = format(rgb, '08b')
-    #                 rgb         = rgb[:-1] + str(binaryData[curDataIdx])
-    #                 curDataIdx += 1
-    #                 # convert rgb back to int
-    #                 imageData[i][j][k] = int(rgb, 2)
+    #[location (as an rgb index), how many bits to write in that location]
+
+    curDataIdx = 0 #the current index to pull data from on the splitData
+    currRunIdx = 0 #As if it were a flattened array, the index of the rgb value
+    currLocationIdx = 0 #which location are we currently using?
+    #write = False;
+    for i,row in enumerate(imageData):
+        for j,pixel in enumerate(row):
+            # convert RGB values to binary format
+            for k,rgb in enumerate(pixel):
+                if currRunIdx == indices[currLocationIdx] + curDataIdx:
+                    rgb         = format(rgb, '08b')
+                    rgb         = rgb[:-1] + str(splitData[currLocationIdx][curDataIdx])
+                    curDataIdx += 1
+                    imageData[i][j][k] = int(rgb, 2)
+                    if curDataIdx == len(splitData[currLocationIdx]):
+                        curDataIdx = 0
+                        currLocationIdx += 1
+                # if curDataIdx < len(binaryData):
+                #     rgb         = format(rgb, '08b')
+                #     rgb         = rgb[:-1] + str(binaryData[curDataIdx])
+                #     curDataIdx += 1
+                #     # convert rgb back to int
+                #     imageData[i][j][k] = int(rgb, 2)
+                currRunIdx += 1
     
     curRGBIdx  = 0
     imageData = imageData[::-1, ::-1, ::-1]
