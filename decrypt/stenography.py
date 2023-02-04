@@ -125,7 +125,7 @@ def getLocations(reverseData, numLocations, maxNum):
     temp = ''
     for i,row in enumerate(reverseData):
         for j, pixel in enumerate(row):
-            for k, rgb in enumerate(imageData):
+            for k, rgb in enumerate(pixel):
                 rgb         = format(rgb, '08b')
                 rgb         = rgb[-1]
                 temp += rgb
