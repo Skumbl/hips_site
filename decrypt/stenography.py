@@ -10,7 +10,7 @@ def encoding(imagePath, dataToEncrypt):
     imageData   = cv2.imread(imagePath)
     numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3 * 8))
     numBytesPic = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3))
-    binaryData  = ''.join(format(ord(i), '08b') for i in dataToEncrypt) + '00000000'
+    binaryData  = ''.join(format(ord(i), '08b') for i in dataToEncrypt)
     numBitsData = len(binaryData)
 
     numLocations     = 10
@@ -22,6 +22,11 @@ def encoding(imagePath, dataToEncrypt):
     #[actual bits(text) for location1, actual bits(text) for location2]
 
     indices = np.sort(indices)
+
+
+    splitData = list(split(binaryData, numLocations))
+    for i,d in enumerate(splitData):
+        splitData[i] = d + '00000000'
 
     maxNum  = len(format(numBytesPic, 'b'))
     for i,num in enumerate(indices):
@@ -54,9 +59,9 @@ def encoding(imagePath, dataToEncrypt):
                 #     imageData[i][j][k] = int(rgb, 2)
                 currRunIdx += 1
     
-    curRGBIdx  = 0
-    imageData = imageData[::-1, ::-1, ::-1]
-    print('imageData: ', imageData)
+    # curRGBIdx  = 0
+    # imageData = imageData[::-1, ::-1, ::-1]
+    # print('imageData: ', imageData)
     # for i,row in enumerate(imageData):
     #     for j,pixel in enumerate(row):
     #         # convert RGB values to binary format
@@ -94,6 +99,10 @@ def decode(imagePath):
     # print('unencrypted: ', unencrypted)
     # return unencrypted
 
+
+def split(a, n):
+    k, m = divmod(len(a), n)
+    return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
 
 # Python3 program to find all pairs in
