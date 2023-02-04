@@ -10,7 +10,7 @@ const Home: NextPage = () => {
   };
 
   return (
-    <div className="grid grid-cols-4 p-16">
+    <div className="grid grid-cols-4 p-16 bg-slate-600 text-white font-LibreBask">
       <div className="flex flex-col items-center">
         <h2>Developers</h2>
         <ul>
@@ -40,13 +40,15 @@ const Home: NextPage = () => {
           </li>
         </ul>
       </div>
+
+
       <div className="col-span-2 flex h-screen flex-col items-center">
         <label htmlFor="text-input">Type to encrypt:</label>
         <textarea
           id="text-input"
           cols={30}
           rows={3}
-          className="rounded border border-black p-1"
+          className="rounded border border-black p-1 text-black"
         />
         <label htmlFor="image-input" className="mt-4">
           Upload an image:
@@ -69,6 +71,8 @@ const Home: NextPage = () => {
           Decrypt
         </button>
       </div>
+
+
       <div className="flex flex-col items-center">
         <h2>Explanation of encryption:</h2>
         {/* TODO: Jan you got this one */}
