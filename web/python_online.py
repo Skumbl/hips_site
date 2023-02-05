@@ -33,32 +33,26 @@ def plot_png():
     
     #making sure its not empty
     if uploaded_file.filename != '':
-        #reading the file
-        #text = uploaded_file.read()
-        #converting to a string.
-        #text = str(text)
         filename = ''
         target = os.path.join(APP_ROOT,'images/')
         if uploaded_file and allowed_file(uploaded_file.filename):
-            filename = secure_filename(uploaded_file.filename)
             flash('Working....')
+            filename    = secure_filename(uploaded_file.filename)
             destination = ''.join([target, filename])
             uploaded_file.save(destination)
             time.sleep(2)
             return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
         else:
             flash('file not allowed')
-            filename = 'warning.png'
+            filename    = 'warning.png'
             destination = ''.join([target, filename])
             time.sleep(2)
             return send_file(destination, mimetype = 'image/png')
 
-        #The created image will be opened on a new page
-    
+    #This just reloads the page if no file is selected and the user tries to POST. 
     else:
         return render_template('index.html',
                         PageTitle = "Landing page")
-      #This just reloads the page if no file is selected and the user tries to POST. 
 
 @app.route('/images/<name>', methods=['GET', 'POST'])
 def download_(name):
