@@ -42,17 +42,12 @@ def plot_png():
             destination = ''.join([target, filename])
             uploaded_file.save(destination)
             if request.form['submit_form'] == 'Encode':
-                print('Encoding....')
                 data2encode = request.form['etext']
-                print(data2encode)
                 encodedName = ''.join([target, 'encoded.png'])
                 encode(destination, data2encode, encodedName)
                 return redirect(url_for('download_', name='encoded.png')) #mimetype = 'image/png'))
             if request.form['submit_form'] == 'Decode':
-                print('Decoding....')
                 decodedText = decode(destination)
-                print(decodedText)
-                print('Decoded')
                 ############ place holder ############
                 return render_template('index.html',
                         PageTitle = "Landing page", decrypted_message=decodedText)
