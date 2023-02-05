@@ -2,7 +2,7 @@
 import os
 import time
 
-from flask import (Flask, Response, flash, make_response, redirect,
+from flask import (Flask, Response, flash, make_response, redirect, send_from_directory,
                    render_template, request, send_file, url_for)
 from werkzeug.utils import secure_filename
 
@@ -11,6 +11,7 @@ app = Flask(__name__)
 
 app.secret_key = "super secret key that takes us places, HackViolet 2023 HIPS"
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+app.config['UPLOAD_FOLDER'] = os.path.join(APP_ROOT,'images/')
 ALLOWED_EXTENSIONS = {'png'}
 
 #decorator for homepage 
@@ -36,7 +37,7 @@ def plot_png():
         #text = uploaded_file.read()
         #converting to a string.
         #text = str(text)
-
+        filename = ''
         target = os.path.join(APP_ROOT,'images/')
         if uploaded_file and allowed_file(uploaded_file.filename):
             filename = secure_filename(uploaded_file.filename)
@@ -63,7 +64,7 @@ def plot_png():
         # output = io.BytesIO()
         # FigureCanvas(fig).print_png(output)
         time.sleep(2)
-        return send_file(destination, mimetype = 'image/png')
+        return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
         #The created image will be opened on a new page
     
     else:
@@ -71,6 +72,13 @@ def plot_png():
                         PageTitle = "Landing page")
       #This just reloads the page if no file is selected and the user tries to POST. 
 
+@app.route('/images/<name>', methods=['GET', 'POST'])
+def download_(name):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], name, as_attachment=True)
+
+# app.add_url_rule(
+#     "/images/<name>", endpoint="download", build_only=True
+# )
 
 if __name__ == '__main__':
     app.run(debug = True)
