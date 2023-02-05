@@ -11,7 +11,6 @@ def encoding(imagePath, dataToEncrypt):
     numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3 * 8))
     numBytesPic = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3))
     binaryData  = ''.join(format(ord(i), '08b') for i in dataToEncrypt)
-    numBitsData = len(binaryData)
 
     numLocations     = 10
 
@@ -56,16 +55,33 @@ def encoding(imagePath, dataToEncrypt):
 
     #[location (as an rgb index), how many bits to write in that location]
 
-    dataIdx = 0
+    dataIdx    = 0
     imgDatFlat = imageData.flatten()
-    for i,rgb in enumerate(imgDatFlat):
+    for i,rgb in enumerate(imgDatFlat): 
         if i in indices:
+            # print(i, dataIdx)
             rgb = format(rgb, '08b')
             rgb = rgb[:-1] + str(splitMergedData[dataIdx])
             dataIdx += 1
             imgDatFlat[i] = int(rgb, 2)
-            if dataIdx == len(splitData):
+            if dataIdx == len(splitMergedData):
                 break
+        
+    temp        = ''
+    unencrypted = ''
+    for i,rgb in enumerate(imgDatFlat): 
+        if i in indices:
+            # print(i, dataIdx)
+            rgb = format(rgb, '08b')
+            rgb = rgb[-1]
+            temp += rgb
+            if len(temp) == 8:
+                newchar      = chr(int(temp, 2))
+                if newchar == '\0':
+                    temp   = ''
+                unencrypted += newchar
+                temp   = ''
+    print('unencrypted: ', unencrypted)
 
     
     curRGBIdx = 0
@@ -78,7 +94,7 @@ def encoding(imagePath, dataToEncrypt):
         if curRGBIdx == len(allIndicesEnds):
             break
     imgDatFlat = imgDatFlat[::-1]
-    imageData = imgDatFlat.reshape(imageData.shape)
+    imageData  = imgDatFlat.reshape(imageData.shape)
           
     cv2.imwrite('decrypt/stockimageEncrypted.png', imageData)
     return
@@ -108,10 +124,11 @@ def decode(imagePath):
             binaryData += rgb
             if len(binaryData) == 8:
                 newchar      = chr(int(binaryData, 2))
+                if newchar == '\0':
+                    binaryData   = ''
+                    break
                 unencrypted += newchar
                 binaryData   = ''
-                if newchar == '\0':
-                    break
     return unencrypted
 
 
@@ -139,6 +156,6 @@ def split(a, n):
 
 
 if __name__ == '__main__':
-    encoding('decrypt/stockimage.png', 'hello world')
+    encoding('decrypt/stockimage.png', 'abcdefghijklmnopqrstuvwxyz')
     decoded = decode('decrypt/stockimageEncrypted.png')
-    print(decoded)
+    # print(decoded)
