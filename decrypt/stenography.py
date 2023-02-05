@@ -3,10 +3,21 @@ import numpy as np
 import os
 import binascii
 import sys
+import re
 from itertools import combinations 
 
 
-def encoding(imagePath, dataToEncrypt):
+def encode(imagePath, dataToEncrypt, output_image):
+    # findSlash = [m.start() for m in re.finditer('/', imagePath)]
+
+    # imgName       = imagePath[findSlash[-1]+1:]
+    # pathBeforeImg = imagePath[:findSlash[-1]+1]
+
+    # check if image exists
+    if not os.path.isfile(imagePath):
+        print('Image not found')
+        exit()
+
     imageData    = cv2.imread(imagePath)
     numBytesPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3))
 
@@ -56,7 +67,6 @@ def encoding(imagePath, dataToEncrypt):
         rgb = imgDatFlat[indx]
         rgb = format(rgb, '08b')
         rgb = rgb[:-1] + str(splitMergedData[i])
-        # dataIdx += 1
         imgDatFlat[indx] = int(rgb, 2)
 
     
@@ -72,7 +82,8 @@ def encoding(imagePath, dataToEncrypt):
     imgDatFlat = imgDatFlat[::-1]
     imageData  = imgDatFlat.reshape(imageData.shape)
           
-    cv2.imwrite('decrypt/stockimageEncrypted.png', imageData)
+    cv2.imwrite(output_image, imageData)
+    print('Image encrypted successfully, saved as to ', output_image)
     return
 
 
@@ -128,16 +139,29 @@ def split(a, n):
     return splitted
 
 
-def findPairs(lst, K, n):
-    return [pair for pair in combinations(lst, n) if sum(pair) == K]
-
-
-
 
 
 if __name__ == '__main__':
-    encoding('decrypt/stockimage.png', 'abasdjksadsadisahdij ajidas idasi disudh ash sahdsaih diuasid sahdui asidhasiu dhsaih iuahu ahdiuahd uisdhiu sahiuashuishac')
-    print('encoded')
-    decoded = decode('decrypt/stockimageEncrypted.png')
-    print('decoded',decoded)
+    import argparse
+    parser = argparse.ArgumentParser(description="Stenography tool to encode and decode text into images")
+    parser.add_argument("-e", "--encode", help="Encode text into the following image")
+    parser.add_argument("-d", "--decode", help="Decode text from the following image")
+    parser.add_argument("-t", "--text",   help="Text to encode into the given image")
+    # parse the args
+    args = parser.parse_args()
+    if args.encode:
+        secret_data = args.text
+        input_image = args.encode
+        path, file  = os.path.split(input_image)
+        filename, ext = file.split(".")
+        output_image = os.path.join(path, f"{filename}_encoded.{ext}")
+        print(f"[+] Encoding {secret_data} into {input_image} and saving it as {output_image} ...")
+        # encode the data into the image
+        encode(imagePath=input_image, dataToEncrypt=secret_data, output_image=output_image)
+        print("[+] Saved encoded image.")
+    if args.decode:
+        input_image = args.decode
+        # decode the secret data from the image and print it in the console
+        decoded_data = decode(input_image)
+        print("[+] Decoded data:", decoded_data)
 
