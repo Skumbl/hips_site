@@ -44,27 +44,15 @@ def plot_png():
             flash('Working....')
             destination = ''.join([target, filename])
             uploaded_file.save(destination)
+            time.sleep(2)
+            return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
         else:
             flash('file not allowed')
             filename = 'warning.png'
             destination = ''.join([target, filename])
-            
-        
-        #You can then run any scripts you want on our file. 
-        #Here we used a text file so any sort of text analysis could be undertaken
-        #You could even run machine learning on a csv dataset.
-        # function_that_does_something_1(text)
-        # function_that_does_something_2(text)
-        # function_that_does_something_3(text)
+            time.sleep(2)
+            return send_file(destination, mimetype = 'image/png')
 
-        # #Here I want to visualise my output for my users - so I return a plot.
-        # #Plotting
-        # fig = plot_something()
-        
-        # output = io.BytesIO()
-        # FigureCanvas(fig).print_png(output)
-        time.sleep(2)
-        return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
         #The created image will be opened on a new page
     
     else:
