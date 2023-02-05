@@ -19,7 +19,7 @@ ALLOWED_EXTENSIONS = {'png'}
 @app.route('/' )
 def index():
     return render_template('index.html',
-                           PageTitle = "Landing page")
+                           PageTitle = "Landing page", decrypted_message='')
 
 
 def allowed_file(filename):
@@ -55,7 +55,9 @@ def plot_png():
                 print('Decoded')
                 ############ place holder ############
                 time.sleep(2)
-                return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
+                return render_template('index.html',
+                        PageTitle = "Landing page", decrypted_message=decodedText)
+                #return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
                 ############ place holder ############
             
         else:
@@ -68,7 +70,11 @@ def plot_png():
     #This just reloads the page if no file is selected and the user tries to POST. 
     else:
         return render_template('index.html',
-                        PageTitle = "Landing page")
+                        PageTitle = "Landing page", decrypted_message='')
+
+# @app.route('/decrypt')
+# def decrypt(content):
+#     return render_template('index.html', decrypted_message=content)
 
 @app.route('/images/<name>', methods=['GET', 'POST'])
 def download_(name):
