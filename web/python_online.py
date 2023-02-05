@@ -1,10 +1,11 @@
 #Package import
-from flask import Flask, render_template, send_file, make_response, flash, url_for, Response, redirect, request 
 import os
 import time
+
+from flask import (Flask, Response, flash, make_response, redirect,
+                   render_template, request, send_file, url_for)
 from werkzeug.utils import secure_filename
 
- 
 #initialise app
 app = Flask(__name__)
 
@@ -36,13 +37,17 @@ def plot_png():
         #converting to a string.
         #text = str(text)
 
+        target = os.path.join(APP_ROOT,'images/')
         if uploaded_file and allowed_file(uploaded_file.filename):
             filename = secure_filename(uploaded_file.filename)
-        flash('Working....')
-        target = os.path.join(APP_ROOT,'images/')
-        destination = ''.join([target, filename])
-        
-        uploaded_file.save(destination)
+            flash('Working....')
+            destination = ''.join([target, filename])
+            uploaded_file.save(destination)
+        else:
+            flash('file not allowed')
+            filename = 'warning.png'
+            destination = ''.join([target, filename])
+            
         
         #You can then run any scripts you want on our file. 
         #Here we used a text file so any sort of text analysis could be undertaken
@@ -57,7 +62,7 @@ def plot_png():
         
         # output = io.BytesIO()
         # FigureCanvas(fig).print_png(output)
-        time.sleep(5)
+        time.sleep(2)
         return send_file(destination, mimetype = 'image/png')
         #The created image will be opened on a new page
     
