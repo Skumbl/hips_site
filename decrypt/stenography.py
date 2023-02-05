@@ -10,15 +10,19 @@ def encoding(imagePath, dataToEncrypt):
     imageData   = cv2.imread(imagePath)
     numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3 * 8))
     numBytesPic = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3))
-    binaryData  = ''.join(format(ord(i), '08b') for i in dataToEncrypt)
 
     numLocations     = 10
 
-    splitData = list(split(binaryData, numLocations))   # split data into 10 parts
+    splitData  = list(split(dataToEncrypt, numLocations))   # split data into 10 parts
+    temp = []
+    for d in splitData:
+        temp.append(''.join(format(ord(i), '08b') for i in d))
+    # print(temp)
+    splitData = temp
+    # binaryData = ''.join(format(ord(i), '08b') for i in dataToEncrypt)
     for i,d in enumerate(splitData):
         splitData[i] = d + '00000000'
     splitMergedData = ''.join(splitData)
-    print('splitMergedData: ', splitMergedData)
     maxDataLen = max([len(d) for d in splitData])
 
     maxNumBits       = int(np.ceil(np.log2(numBytesPic)))
@@ -37,7 +41,6 @@ def encoding(imagePath, dataToEncrypt):
                     indices[i+1] = maxDataLen
     
     indicesEnds = indices.copy()
-    print('indices: ', indices)
     idxs2 = np.array([], dtype=int)
     for i,idx in enumerate(indices):
         idxs2 = np.append(idxs2, np.arange(idx, idx+len(splitData[i])))
@@ -66,22 +69,6 @@ def encoding(imagePath, dataToEncrypt):
             imgDatFlat[i] = int(rgb, 2)
             if dataIdx == len(splitMergedData):
                 break
-        
-    temp        = ''
-    unencrypted = ''
-    for i,rgb in enumerate(imgDatFlat): 
-        if i in indices:
-            # print(i, dataIdx)
-            rgb = format(rgb, '08b')
-            rgb = rgb[-1]
-            temp += rgb
-            if len(temp) == 8:
-                newchar      = chr(int(temp, 2))
-                if newchar == '\0':
-                    temp   = ''
-                unencrypted += newchar
-                temp   = ''
-    print('unencrypted: ', unencrypted)
 
     
     curRGBIdx = 0
@@ -109,7 +96,6 @@ def decode(imagePath):
     curDataIdx  = 0
     reverseData = imageData.flatten()[::-1]
     locations = getLocations(reverseData, numLocations, maxNum)
-    print(locations)
 
     flattened = imageData.flatten()
     
@@ -150,12 +136,13 @@ def getLocations(reverseData, numLocations, maxNum):
 
 def split(a, n):
     k, m = divmod(len(a), n)
-    return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
+    splitted = (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
+    return splitted
 
 
 
 
 if __name__ == '__main__':
-    encoding('decrypt/stockimage.png', 'abcdefghijklmnopqrstuvwxyz')
+    encoding('decrypt/stockimage.png', 'abc')
     decoded = decode('decrypt/stockimageEncrypted.png')
-    # print(decoded)
+    print('decoded',decoded)
