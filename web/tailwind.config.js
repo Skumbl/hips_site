@@ -5,7 +5,11 @@ module.exports = {
     "./static/src/**/*.js"
   ],
   theme: {
-    extend: {},
+    extend: {
+        fontFamily: {
+            Rubik: "Rubik"
+        }
+    },
   },
   plugins: [],
 }
