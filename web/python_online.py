@@ -53,7 +53,13 @@ def plot_png():
                 encodedFileName = filename.split('.')[0]
                 encodedFileName = ''.join([encodedFileName, '_encoded.png'])
                 encodedName     = ''.join([target, encodedFileName])
-                encode(destination, data2encode, encodedName)
+                try:
+                    encode(destination, data2encode, encodedName)
+                except:
+                    flash('File too large')
+                    filename = 'warning.png'
+                    target   = os.path.join(APP_ROOT,filename)
+                    return send_file(target, mimetype = 'image/png')
                 thread = threading.Thread(target=removeOld, args=(filename, encodedFileName))
                 thread.start()
                 return redirect(url_for('download_', name=encodedFileName)) #mimetype = 'image/png'))
