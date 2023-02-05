@@ -47,7 +47,6 @@ def plot_png():
                 print(data2encode)
                 encodedName = ''.join([target, 'encoded.png'])
                 encode(destination, data2encode, encodedName)
-                time.sleep(2)
                 return redirect(url_for('download_', name='encoded.png')) #mimetype = 'image/png'))
             if request.form['submit_form'] == 'Decode':
                 print('Decoding....')
@@ -55,7 +54,6 @@ def plot_png():
                 print(decodedText)
                 print('Decoded')
                 ############ place holder ############
-                time.sleep(2)
                 return render_template('index.html',
                         PageTitle = "Landing page", decrypted_message=decodedText)
                 #return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
