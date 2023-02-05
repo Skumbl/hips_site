@@ -1,7 +1,7 @@
 from hips_hack.stenography import encode, decode
 
-# encode(imagePath='/Users/trumandewalch/Downloads/IMG_0632.JPG', dataToEncrypt='hello!', outputImagePath='/Users/trumandewalch/Downloads/IMG_0632_encrypted.JPG')
-message = decode(imagePath='/Users/trumandewalch/Downloads/IMG_0632_encrypted.png')
+# encode(imagePath='/Users/trumandewalch/Downloads/testing.jpeg', dataToEncrypt='hello!', outputImagePath='/Users/trumandewalch/Downloads/testing_encrypted.png')
+message = decode(imagePath='/Users/trumandewalch/Downloads/testing_encrypted.png')
 print(message)
 
 
