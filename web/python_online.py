@@ -50,7 +50,8 @@ def plot_png():
                 return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
             if request.form['submit_form'] == 'Decode':
                 print('Decoding....')
-                decode(destination)
+                decodedText = decode(destination)
+                print(decodedText)
                 print('Decoded')
                 ############ place holder ############
                 time.sleep(2)
