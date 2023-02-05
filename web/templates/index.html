@@ -1,38 +1,107 @@
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-    
-    <section>
-        <h1><u>Stenography</u></h1>
-          <div class="file_input_form">
-              <form method= "POST" action = "" enctype="multipart/form-data" accept=".txt">
-                  <div class = "form_title">Encrypt Image Here! Only .png files accepted</div><br>
-                  <div class = "file_input"><input type="file" name = "txt_file" enctype="multipart/form-data" accept=".png"></div>
-                  <label for="etext">Encryption Message:</label>
-                    <br>
-                    <textarea type="textarea" id="etext" name="etext" class="" style="width:30%;height:150px"></textarea>
-                    <br>
-                  <div class = "submit_button"><input type="submit" name="submit_form" value="Encode" enctype="multipart/form-data"></div>
-              </form>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>H.I.P.S.</title>
+    <style>
+      .flex-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="flex-container">
+      <h1><u>Stenography</u></h1>
+      <div class="file_input_form flex-container">
+        <form
+          method="POST"
+          action=""
+          enctype="multipart/form-data"
+          accept=".txt"
+        >
+          <div class="form_title">
+            Encrypt Image Here! Only .png files accepted
           </div>
+          <br />
+          <div class="file_input">
+            <input
+              type="file"
+              name="txt_file"
+              enctype="multipart/form-data"
+              accept=".png"
+            />
+          </div>
+          <label for="etext">Encryption Message:</label>
+          <br />
+          <textarea
+            type="textarea"
+            id="etext"
+            name="etext"
+            class=""
+            cols="30"
+            rows="3"
+          ></textarea>
+          <br />
+          <div class="submit_button">
+            <input
+              type="submit"
+              name="submit_form"
+              value="Encode"
+              enctype="multipart/form-data"
+            />
+          </div>
+        </form>
+      </div>
     </section>
-    <br>
-    <section>
-        <div class="file_input_form">
-            <form method= "POST" action = "" enctype="multipart/form-data" accept=".txt">
-                <div class = "text-2xl">Decrypt Image Here! Only .png files accepted</div><br>
-                <div class = "file_input"><input type="file" name = "txt_file" enctype="multipart/form-data" accept=".png"></div>
-                <div class = "submit_button"><input type="submit" name="submit_form" value="Decode" enctype="multipart/form-data"></div>
-                <label for="etext">Decrypted Message:</label>
-                    <br>
-                    <textarea disabled="true" type="textarea" id="etext" name="etext" class="" style="width:30%;height:150px">{{decrypted_message}}</textarea>
-                    <br>
-            </form>
-        </div>
+    <br />
+    <section class="flex-container">
+      <div class="file_input_form">
+        <form
+          method="POST"
+          action=""
+          enctype="multipart/form-data"
+          accept=".txt"
+        >
+          <div class="text-2xl">
+            Decrypt Image Here! Only .png files accepted
+          </div>
+          <br />
+          <div class="file_input">
+            <input
+              type="file"
+              name="txt_file"
+              enctype="multipart/form-data"
+              accept=".png"
+            />
+          </div>
+          <div class="submit_button">
+            <input
+              type="submit"
+              name="submit_form"
+              value="Decode"
+              enctype="multipart/form-data"
+            />
+          </div>
+          <label for="etext">Decrypted Message:</label>
+          <br />
+          <textarea
+            disabled="true"
+            type="textarea"
+            id="etext"
+            name="etext"
+            class=""
+            cols="30"
+            rows="3"
+          >
+{{decrypted_message}}</textarea
+          >
+          <br />
+        </form>
+      </div>
     </section>
-    
-    </body>
-    </html>
+  </body>
+</html>
