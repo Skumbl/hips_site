@@ -2,12 +2,15 @@
 from flask import Flask, render_template, send_file, make_response, flash, url_for, Response, redirect, request 
 import os
 import time
+from werkzeug.utils import secure_filename
+
  
 #initialise app
 app = Flask(__name__)
 
 app.secret_key = "super secret key that takes us places, HackViolet 2023 HIPS"
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+ALLOWED_EXTENSIONS = {'png'}
 
 #decorator for homepage 
 @app.route('/' )
@@ -15,6 +18,10 @@ def index():
     return render_template('index.html',
                            PageTitle = "Landing page")
 
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 #These functions will run when POST method is used.
 @app.route('/', methods = ["POST"] )
@@ -28,9 +35,12 @@ def plot_png():
         #text = uploaded_file.read()
         #converting to a string.
         #text = str(text)
+
+        if uploaded_file and allowed_file(uploaded_file.filename):
+            filename = secure_filename(uploaded_file.filename)
         flash('Working....')
         target = os.path.join(APP_ROOT,'images/')
-        destination = ''.join([target, uploaded_file.filename])
+        destination = ''.join([target, filename])
         
         uploaded_file.save(destination)
         
