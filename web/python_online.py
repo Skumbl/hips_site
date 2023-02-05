@@ -2,17 +2,18 @@
 import os
 import time
 
-from flask import (Flask, Response, flash, make_response, redirect, send_from_directory,
-                   render_template, request, send_file, url_for)
+from flask import (Flask, Response, flash, make_response, redirect,
+                   render_template, request, send_file, url_for, send_from_directory, current_app)
 from werkzeug.utils import secure_filename
 
 #initialise app
 app = Flask(__name__)
 
 app.secret_key = "super secret key that takes us places, HackViolet 2023 HIPS"
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-app.config['UPLOAD_FOLDER'] = os.path.join(APP_ROOT,'images/')
+APP_ROOT       = os.path.dirname(os.path.abspath(__file__))
 ALLOWED_EXTENSIONS = {'png'}
+UPLOAD_DIRECTORY   = "/images"
+
 
 #decorator for homepage 
 @app.route('/' )
@@ -24,6 +25,7 @@ def index():
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 #These functions will run when POST method is used.
 @app.route('/', methods = ["POST"] )
@@ -46,7 +48,7 @@ def plot_png():
             uploaded_file.save(destination)
         else:
             flash('file not allowed')
-            filename = 'warning.png'
+            filename    = 'warning.png'
             destination = ''.join([target, filename])
             
         
