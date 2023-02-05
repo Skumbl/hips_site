@@ -6,10 +6,11 @@
     <body>
     
     <section>
+        <h1><u>Stenography</u></h1>
           <div class="file_input_form">
               <form method= "POST" action = "" enctype="multipart/form-data" accept=".txt">
-                  <div class = "form_title"><u>Submit your file here!</u></div><br>
-                  <div class = "file_input"><input type="file" name = "txt_file" enctype="multipart/form-data"></div>
+                  <div class = "form_title">Encrypt Image Here!</div><br>
+                  <div class = "file_input"><input type="file" name = "txt_file" enctype="multipart/form-data" accept=".png"></div>
                   <label for="etext">Encryption Message:</label>
                     <br>
                     <textarea type="textarea" id="etext" name="etext" class="" style="width:30%;height:150px"></textarea>
@@ -23,7 +24,7 @@
         <div class="file_input_form">
             <form method= "POST" action = "" enctype="multipart/form-data" accept=".txt">
                 <div class = "text-2xl">Decrypt Image Here!</div><br>
-                <div class = "file_input"><input type="file" name = "txt_file" enctype="multipart/form-data"></div>
+                <div class = "file_input"><input type="file" name = "txt_file" enctype="multipart/form-data" accept=".png"></div>
                 <div class = "submit_button"><input type="submit" name="submit_form" value="Decode" enctype="multipart/form-data"></div>
                 <label for="etext">Decrypted Message:</label>
                     <br>
