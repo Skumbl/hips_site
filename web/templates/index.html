@@ -6,7 +6,6 @@
         <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
     </head>
     <body class="flex justify-center bg-slate-500 text-gray-800 font-Rubik">
-    
     <section>
           <div class="file_input_form">
               <form method= "POST" action = "" enctype="multipart/form-data" accept=".txt">
@@ -15,15 +14,25 @@
                   <div class = "submit_button"><input type="submit" name="submit_form" enctype="multipart/form-data"></div>
               </form>
           </div>
-            <label htmlFor="text-input">Type to encrypt:</label>
-            <p></p>
-            <textarea
-              id="text-input"
-              cols={30}
-              rows={3}
-              className="rounded border border-black p-1 text-black"
-              >
-              </textarea>
+          <div>
+            <form method="text-input">
+                <label for="etext">Encryption Message:</label>
+                <br>
+                <input type="text" id="etext" name="etext" class="">
+                <br>
+                <div class = "submit_button"><input type="submit" name="submit_form" enctype="multipart/form-data"></div>
+            </form>
+          </div>
+    </section>
+    <br>
+    <section>
+        <div class="file_input_form">
+            <form method= "POST" action = "" enctype="multipart/form-data" accept=".txt">
+                <div class = "text-2xl">Decrypt Image Here!</div><br>
+                <div class = "file_input"><input type="file" name = "txt_file" enctype="multipart/form-data"></div>
+                <div class = "submit_button"><input type="submit" name="submit_form" enctype="multipart/form-data"></div>
+            </form>
+        </div>
     </section>
     
     </body>
