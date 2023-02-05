@@ -41,14 +41,22 @@ def plot_png():
             filename    = secure_filename(uploaded_file.filename)
             destination = ''.join([target, filename])
             uploaded_file.save(destination)
-            print(request.form['submit_form'])
-            # if request.form['submit_form'] == 'Encode':
-            print('Encoding....')
-            data2encode = request.form['etext']
-            encode(destination, data2encode, ''.join([target, 'encoded.png']))
+            if request.form['submit_form'] == 'Encode':
+                print('Encoding....')
+                data2encode = request.form['etext']
+                print(data2encode)
+                encode(destination, data2encode, ''.join([target, 'encoded.png']))
+                time.sleep(2)
+                return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
+            if request.form['submit_form'] == 'Decode':
+                print('Decoding....')
+                decode(destination)
+                print('Decoded')
+                ############ place holder ############
+                time.sleep(2)
+                return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
+                ############ place holder ############
             
-            time.sleep(2)
-            return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
         else:
             flash('file not allowed')
             filename    = 'warning.png'
