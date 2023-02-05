@@ -8,20 +8,15 @@
     <body class="flex justify-center bg-slate-500 text-gray-800 font-Rubik">
     <section>
           <div class="file_input_form">
-              <form method= "POST" action = "" enctype="multipart/form-data" accept=".txt">
+              <form method= "POST" action = "" enctype="multipart/form-data" accept=".png">
                   <div class = "text-2xl">Submit your file here!</div><br>
                   <div class = "file_input"><input type="file" name = "txt_file" enctype="multipart/form-data"></div>
-                  <div class = "submit_button"><input type="submit" name="submit_form" enctype="multipart/form-data"></div>
+                  <label for="etext">Encryption Message:</label>
+                    <br>
+                    <input type="text" id="etext" name="etext" class="">
+                    <br>
+                  <div class = "submit_button"><input type="submit" name="submit_form" enctype="multipart/form-data">Encode</div>
               </form>
-          </div>
-          <div>
-            <form method="text-input">
-                <label for="etext">Encryption Message:</label>
-                <br>
-                <input type="text" id="etext" name="etext" class="">
-                <br>
-                <div class = "submit_button"><input type="submit" name="submit_form" enctype="multipart/form-data"></div>
-            </form>
           </div>
     </section>
     <br>
@@ -30,7 +25,7 @@
             <form method= "POST" action = "" enctype="multipart/form-data" accept=".txt">
                 <div class = "text-2xl">Decrypt Image Here!</div><br>
                 <div class = "file_input"><input type="file" name = "txt_file" enctype="multipart/form-data"></div>
-                <div class = "submit_button"><input type="submit" name="submit_form" enctype="multipart/form-data"></div>
+                <div class = "submit_button"><input type="submit" name="submit_form" enctype="multipart/form-data">Decode</div>
             </form>
         </div>
     </section>
