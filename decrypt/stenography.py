@@ -7,19 +7,16 @@ from itertools import combinations
 
 
 def encoding(imagePath, dataToEncrypt):
-    imageData   = cv2.imread(imagePath)
-    numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3 * 8))
-    numBytesPic = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3))
+    imageData    = cv2.imread(imagePath)
+    numBytesPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3))
 
-    numLocations     = 10
+    numLocations = 10
 
     splitData  = list(split(dataToEncrypt, numLocations))   # split data into 10 parts
     temp = []
     for d in splitData:
         temp.append(''.join(format(ord(i), '08b') for i in d))
-    # print(temp)
     splitData = temp
-    # binaryData = ''.join(format(ord(i), '08b') for i in dataToEncrypt)
     for i,d in enumerate(splitData):
         splitData[i] = d + '00000000'
     splitMergedData = ''.join(splitData)
@@ -41,13 +38,11 @@ def encoding(imagePath, dataToEncrypt):
                     indices[i+1] = maxDataLen
     
     indicesEnds = indices.copy()
-    idxs2 = np.array([], dtype=int)
+    idxs2       = np.array([], dtype=int)
     for i,idx in enumerate(indices):
         idxs2 = np.append(idxs2, np.arange(idx, idx+len(splitData[i])))
-    idxs2 = np.array(idxs2, dtype=int)
+    idxs2   = np.array(idxs2, dtype=int)
     indices = idxs2
-
-
 
     maxNum  = len(format(numBytesPic, 'b'))
     allIndicesEnds = ''
@@ -56,19 +51,13 @@ def encoding(imagePath, dataToEncrypt):
         num = num.zfill(maxNum)
         allIndicesEnds += num
 
-    #[location (as an rgb index), how many bits to write in that location]
-
-    dataIdx    = 0
     imgDatFlat = imageData.flatten()
-    for i,rgb in enumerate(imgDatFlat): 
-        if i in indices:
-            # print(i, dataIdx)
-            rgb = format(rgb, '08b')
-            rgb = rgb[:-1] + str(splitMergedData[dataIdx])
-            dataIdx += 1
-            imgDatFlat[i] = int(rgb, 2)
-            if dataIdx == len(splitMergedData):
-                break
+    for i,indx in enumerate(indices):
+        rgb = imgDatFlat[indx]
+        rgb = format(rgb, '08b')
+        rgb = rgb[:-1] + str(splitMergedData[i])
+        # dataIdx += 1
+        imgDatFlat[indx] = int(rgb, 2)
 
     
     curRGBIdx = 0
@@ -89,11 +78,9 @@ def encoding(imagePath, dataToEncrypt):
 
 def decode(imagePath):
     imageData   = cv2.imread(imagePath)
-    numBitsPic  = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3 * 8))
     numBytesPic = int(np.floor(imageData.shape[0] * imageData.shape[1] * 3))
     numLocations = 10
     maxNum = len(format(numBytesPic, 'b'))
-    curDataIdx  = 0
     reverseData = imageData.flatten()[::-1]
     locations = getLocations(reverseData, numLocations, maxNum)
 
@@ -134,15 +121,23 @@ def getLocations(reverseData, numLocations, maxNum):
                 return locations
     return locations
 
+
 def split(a, n):
     k, m = divmod(len(a), n)
     splitted = (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
     return splitted
 
 
+def findPairs(lst, K, n):
+    return [pair for pair in combinations(lst, n) if sum(pair) == K]
+
+
+
 
 
 if __name__ == '__main__':
-    encoding('decrypt/stockimage.png', 'abc')
+    encoding('decrypt/stockimage.png', 'abasdjksadsadisahdij ajidas idasi disudh ash sahdsaih diuasid sahdui asidhasiu dhsaih iuahu ahdiuahd uisdhiu sahiuashuishac')
+    print('encoded')
     decoded = decode('decrypt/stockimageEncrypted.png')
     print('decoded',decoded)
+
