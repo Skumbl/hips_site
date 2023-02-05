@@ -1,13 +1,15 @@
 #Package import
+import datetime
 import os
+import pathlib
+import threading
 import time
 
-from flask import (Flask, Response, flash, make_response, redirect, send_from_directory,
-                   render_template, request, send_file, url_for)
+from flask import (Flask, Response, flash, make_response, redirect,
+                   render_template, request, send_file, send_from_directory,
+                   url_for)
+from hips_hack.stenography import decode, encode
 from werkzeug.utils import secure_filename
-from hips_hack.stenography import encode, decode
-import pathlib
-import datetime
 
 #initialise app
 app = Flask(__name__)
@@ -16,6 +18,9 @@ app.secret_key = "super secret key that takes us places, HackViolet 2023 HIPS"
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 app.config['UPLOAD_FOLDER'] = os.path.join(APP_ROOT,'images/')
 ALLOWED_EXTENSIONS = {'png'}
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+
 
 #decorator for homepage 
 @app.route('/' )
@@ -33,26 +38,11 @@ def allowed_file(filename):
 def plot_png():
     #gathering file from form
     uploaded_file = request.files['txt_file']
-    # get all files in directory
-    files = os.listdir(app.config['UPLOAD_FOLDER'])
-    print(files)
-    for file in files:
-        filePath = app.config['UPLOAD_FOLDER'] + '/' + file
-        stat     = os.stat(filePath)
-        c_timestamp = stat.st_birthtime
-        c_time      = datetime.datetime.fromtimestamp(c_timestamp)
-        # check if c_time is older than 10 seconds
-        if (datetime.datetime.now() - c_time).total_seconds() > 10:
-            if 'warning.png' in file:
-            # if 'warning.png' in file or 'stockimage.png' in file:
-                continue
-            os.remove(filePath)
-            print('removed', file)
     
     #making sure its not empty
     if uploaded_file.filename != '':
         filename = ''
-        target = os.path.join(APP_ROOT,'images/')
+        target   = os.path.join(APP_ROOT,'images/')
         if uploaded_file and allowed_file(uploaded_file.filename):
             flash('Working....')
             filename    = secure_filename(uploaded_file.filename)
@@ -60,37 +50,48 @@ def plot_png():
             uploaded_file.save(destination)
             if request.form['submit_form'] == 'Encode':
                 data2encode = request.form['etext']
-                encodedName = ''.join([target, 'encoded.png'])
+                encodedFileName = filename.split('.')[0]
+                encodedFileName = ''.join([encodedFileName, '_encoded.png'])
+                encodedName     = ''.join([target, encodedFileName])
                 encode(destination, data2encode, encodedName)
-                return redirect(url_for('download_', name='encoded.png')) #mimetype = 'image/png'))
+                thread = threading.Thread(target=removeOld, args=(filename, encodedFileName))
+                thread.start()
+                return redirect(url_for('download_', name=encodedFileName)) #mimetype = 'image/png'))
             if request.form['submit_form'] == 'Decode':
                 decodedText = decode(destination)
+                thread      = threading.Thread(target=removeOld, args=(filename,))
+                thread.start()
                 return render_template('index.html',
                         PageTitle = "Landing page", decrypted_message=decodedText)
             
         else:
             flash('file not allowed')
-            filename    = 'warning.png'
-            destination = ''.join([target, filename])
-            time.sleep(2)
-            return send_file(destination, mimetype = 'image/png')
+            filename = 'warning.png'
+            target   = os.path.join(APP_ROOT,filename)
+            return send_file(target, mimetype = 'image/png')
 
     #This just reloads the page if no file is selected and the user tries to POST. 
     else:
         return render_template('index.html',
                         PageTitle = "Landing page", decrypted_message='')
 
-# @app.route('/decrypt')
-# def decrypt(content):
-#     return render_template('index.html', decrypted_message=content)
 
 @app.route('/images/<name>', methods=['GET', 'POST'])
 def download_(name):
     return send_from_directory(app.config['UPLOAD_FOLDER'], name, as_attachment=True)
 
-# app.add_url_rule(
-#     "/images/<name>", endpoint="download", build_only=True
-# )
+
+def removeOld(*args):
+    time.sleep(10)
+    for file in args:
+        filePath = app.config['UPLOAD_FOLDER'] + '/' + file
+
+        os.remove(filePath)
+        print('removed', file)
+
 
 if __name__ == '__main__':
+    # check if /images folder exists
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
     app.run(debug = True)
