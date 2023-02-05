@@ -6,6 +6,8 @@ from flask import (Flask, Response, flash, make_response, redirect, send_from_di
                    render_template, request, send_file, url_for)
 from werkzeug.utils import secure_filename
 from hips_hack.stenography import encode, decode
+import pathlib
+import datetime
 
 #initialise app
 app = Flask(__name__)
@@ -31,6 +33,21 @@ def allowed_file(filename):
 def plot_png():
     #gathering file from form
     uploaded_file = request.files['txt_file']
+    # get all files in directory
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    print(files)
+    for file in files:
+        filePath = app.config['UPLOAD_FOLDER'] + '/' + file
+        stat     = os.stat(filePath)
+        c_timestamp = stat.st_birthtime
+        c_time      = datetime.datetime.fromtimestamp(c_timestamp)
+        # check if c_time is older than 10 seconds
+        if (datetime.datetime.now() - c_time).total_seconds() > 10:
+            if 'warning.png' in file:
+            # if 'warning.png' in file or 'stockimage.png' in file:
+                continue
+            os.remove(filePath)
+            print('removed', file)
     
     #making sure its not empty
     if uploaded_file.filename != '':
