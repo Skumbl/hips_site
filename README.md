@@ -38,3 +38,11 @@ The reason we went with python was ease of access for packages, as well as it be
 We tried using tailwind without a react front-end, but that ended being a real pain, and not something we could work out given the time restraint. So we ended up just using a plain CSS sheet.
 
 ## How Encryption Works
+
+One primary challenge of encoding text into images is making sure the image doesn’t look different after being encoded. We accomplished this by taking each individual, red, green, blue value, and changing the last, or least significant bit, to represent a bit in ASCII text. 
+
+We started by doing this on the first X RGB values in the image, X being the number of binary bits required to represent the ASCII message typed in. However, this makes it pretty easy to figure out the encoded text, making the encoding useless. We needed a way to make it much more difficult to decipher the message (without using the decode method), and make the message more secure. 
+
+In order to solve this, we encrypted parts of the message throughout the message by indexing all the R, G, B values and randomly choosing which ones to write parts of the message to. So how will the decode message identify where these randomly chosen locations are (and how much text is stored starting at each one)? Well, after each piece of text (starting at a randomly chosen location), we include 8 zeroes, representing the null terminator string. This tells the decoder to stop reading the current set of encoded bits. But how does it know where these locations actually are? Well, in reverse order at the end of the file we encode the locations of the bits. When decoding, this information is pulled to start decoding the image. 
+
+This stenography tool was packaged into a pip package, which can be installed by any user into their python installation. We used a flask server, running on AWS, as flask is python and can natively run our stenography package. 
