@@ -5,6 +5,7 @@ import time
 from flask import (Flask, Response, flash, make_response, redirect, send_from_directory,
                    render_template, request, send_file, url_for)
 from werkzeug.utils import secure_filename
+from hips_hack.stenography import encode, decode
 
 #initialise app
 app = Flask(__name__)
@@ -40,6 +41,11 @@ def plot_png():
             filename    = secure_filename(uploaded_file.filename)
             destination = ''.join([target, filename])
             uploaded_file.save(destination)
+            print(request.form['submit_form'])
+            # if request.form['submit_form'] == 'Encode':
+            print('Encoding....')
+            data2encode = request.form['etext']
+            encode(destination, data2encode, ''.join([target, 'encoded.png']))
             
             time.sleep(2)
             return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
