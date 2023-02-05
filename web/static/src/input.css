@@ -1,8 +1,0 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@font-face {
-    font-family: "Rubik";
-    src: url(/public/Rubik-Regular.ttf);
-}
