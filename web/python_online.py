@@ -40,6 +40,7 @@ def plot_png():
             filename    = secure_filename(uploaded_file.filename)
             destination = ''.join([target, filename])
             uploaded_file.save(destination)
+            
             time.sleep(2)
             return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
         else:
