@@ -9,7 +9,7 @@ We thought the idea was cool  but we wanted to do something a bit more interesti
 
 We also made our domain a fun easter egg
 
-http://nojjktotvrgotyomnz.tech
+> http://nojjktotvrgotyomnz.tech
 
 its a cypher 
 
