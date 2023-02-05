@@ -48,11 +48,8 @@ def plot_png():
                 return redirect(url_for('download_', name='encoded.png')) #mimetype = 'image/png'))
             if request.form['submit_form'] == 'Decode':
                 decodedText = decode(destination)
-                ############ place holder ############
                 return render_template('index.html',
                         PageTitle = "Landing page", decrypted_message=decodedText)
-                #return redirect(url_for('download_', name=filename)) #mimetype = 'image/png'))
-                ############ place holder ############
             
         else:
             flash('file not allowed')
